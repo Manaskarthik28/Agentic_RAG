@@ -6,3 +6,4 @@ langchain-text-splitters
 langchain-pinecone
 langchain-google-genai
 pypdf
+pinecone
