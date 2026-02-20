@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body style="min-height: 100vh; display: flex; justify-content: center; align-items: flex-start;">
+    <div style="display: flex; flex-direction: column; align-items: center; text-align: center; border: 3px solid grey; padding: 100px;">
+        <h1>Welcome to RAG App</h1>
+        <label>Upload File</label><br>
+        <input type="file" accept=".pdf" required id="uploadDocument"><br>
+        <button style="color: blue; cursor: pointer;" onclick="uploadFile()">Upload</button><br>
+        <label>Ask Question</label><br>
+        <input type="text" placeholder="Enter your question?" id="Ask" style="width: 150%; min-height: 5vh; text-align: center;"><br>
+        <button style="color: blue; cursor: pointer;" onclick="generate()">Submit</button><br>
+        <label>AI Response</label><br>
+        <textarea id="aiResponse" readonly placeholder = "AI answer" style="width: 150%; min-height: 20vh;"></textarea>
+    </div>
+    <script>
+        async function uploadFile() {
+            const fileInput = document.getElementById('uploadDocument')
+            const formData = new FormData()
+            formData.append('file', fileInput.files[0])
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData,
+            })
+            const data = await response.json()
+            console.log(data.doc_result)
+        }
+        
+        async function generate(){
+            const textInput = document.getElementById('Ask')
+            const response = await fetch('/response', {
+                method: 'POST',
+                headers:{
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify({"query": textInput.value})
+            })
+            const data = await response.json()
+            const responseDisplay = document.getElementById('aiResponse')
+            responseDisplay.value = data.llm_result
+        }
+    </script>
+</body>
+</html>
